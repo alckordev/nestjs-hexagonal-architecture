@@ -9,11 +9,11 @@ export class DeleteUserUseCase {
   ) {}
 
   async execute(id: string): Promise<void> {
-    // Verificar si el usuario existe
+    // Check if user exists
     const existingUser = await this.userRepository.findById(id);
 
     if (!existingUser) {
-      throw new NotFoundException(`Usuario con id ${id} no encontrado`);
+      throw new NotFoundException(`User with id ${id} not found`);
     }
 
     await this.userRepository.delete(id);

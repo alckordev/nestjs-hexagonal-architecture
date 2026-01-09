@@ -6,23 +6,22 @@ import { GetAllUsersUseCase } from './application/use-cases/get-all-users.use-ca
 import { UpdateUserUseCase } from './application/use-cases/update-user.use-case';
 import { DeleteUserUseCase } from './application/use-cases/delete-user.use-case';
 import { PrismaUserRepositoryAdapter } from './infrastructure/adapters/prisma-user.repository.adapter';
-import { IUserRepository } from './domain/ports/user.repository.port';
 
 @Module({
   controllers: [UsersController],
   providers: [
-    // Casos de uso
+    // Use cases
     CreateUserUseCase,
     GetUserUseCase,
     GetAllUsersUseCase,
     UpdateUserUseCase,
     DeleteUserUseCase,
-    // Repositorio (implementación del puerto)
+    // Repository (port implementation)
     {
       provide: 'IUserRepository',
       useClass: PrismaUserRepositoryAdapter,
     },
-    // También proporcionamos el adaptador directamente para inyección
+    // Also provide the adapter directly for injection
     PrismaUserRepositoryAdapter,
   ],
   exports: [CreateUserUseCase, GetUserUseCase, GetAllUsersUseCase],

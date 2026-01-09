@@ -11,14 +11,14 @@ export class CreateUserUseCase {
   ) {}
 
   async execute(createUserDto: CreateUserDto): Promise<User> {
-    // Verificar si el email ya existe
+    // Check if email already exists
     const existingUser = await this.userRepository.findByEmail(
       createUserDto.email,
     );
 
     if (existingUser) {
       throw new ConflictException(
-        `El usuario con email ${createUserDto.email} ya existe`,
+        `User with email ${createUserDto.email} already exists`,
       );
     }
 

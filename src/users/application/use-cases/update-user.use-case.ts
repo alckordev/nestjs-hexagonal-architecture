@@ -16,14 +16,14 @@ export class UpdateUserUseCase {
   ) {}
 
   async execute(id: string, updateUserDto: UpdateUserDto): Promise<User> {
-    // Verificar si el usuario existe
+    // Check if user exists
     const existingUser = await this.userRepository.findById(id);
 
     if (!existingUser) {
-      throw new NotFoundException(`Usuario con id ${id} no encontrado`);
+      throw new NotFoundException(`User with id ${id} not found`);
     }
 
-    // Si se está actualizando el email, verificar que no exista otro usuario con ese email
+    // If updating email, verify it's not already in use by another user
     if (updateUserDto.email && updateUserDto.email !== existingUser.email) {
       const userWithEmail = await this.userRepository.findByEmail(
         updateUserDto.email,
@@ -31,7 +31,7 @@ export class UpdateUserUseCase {
 
       if (userWithEmail && userWithEmail.id !== id) {
         throw new ConflictException(
-          `El email ${updateUserDto.email} ya está en uso`,
+          `Email ${updateUserDto.email} is already in use`,
         );
       }
     }

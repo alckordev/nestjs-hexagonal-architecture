@@ -9,24 +9,24 @@ import {
 
 export class UpdateUserDto {
   @IsOptional()
-  @IsEmail({}, { message: 'El email debe ser una dirección de correo válida' })
+  @IsEmail({}, { message: 'email must be a valid email address' })
   email?: string;
 
   @IsOptional()
-  @IsString({ message: 'El nombre debe ser una cadena de texto' })
-  @MinLength(2, { message: 'El nombre debe tener al menos 2 caracteres' })
-  @MaxLength(100, { message: 'El nombre no puede exceder 100 caracteres' })
+  @IsString({ message: 'name must be a string' })
+  @MinLength(2, { message: 'name must be at least 2 characters long' })
+  @MaxLength(100, { message: 'name must not exceed 100 characters' })
   name?: string;
 
   @IsOptional()
-  @IsString({ message: 'La contraseña debe ser una cadena de texto' })
-  @MinLength(6, { message: 'La contraseña debe tener al menos 6 caracteres' })
+  @IsString({ message: 'password must be a string' })
+  @MinLength(6, { message: 'password must be at least 6 characters long' })
   @MaxLength(255, {
-    message: 'La contraseña no puede exceder 255 caracteres',
+    message: 'password must not exceed 255 characters',
   })
   password?: string;
 
   @IsOptional()
-  @IsBoolean({ message: 'isActive debe ser un valor booleano' })
+  @IsBoolean({ message: 'isActive must be a boolean value' })
   isActive?: boolean;
 }
