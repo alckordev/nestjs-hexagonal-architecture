@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { PrismaModule } from './shared/infrastructure/database/prisma/prisma.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -9,6 +10,7 @@ import { PrismaModule } from './shared/infrastructure/database/prisma/prisma.mod
       envFilePath: `.env.${process.env.NODE_ENV || 'development'}`,
     }),
     PrismaModule,
+    UsersModule,
   ],
   providers: [],
 })
