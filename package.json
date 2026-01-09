@@ -70,9 +70,17 @@
       "^.+\\.(t|j)s$": "ts-jest"
     },
     "collectCoverageFrom": [
-      "**/*.(t|j)s"
+      "**/*.(t|j)s",
+      "!**/*.spec.ts",
+      "!**/*.interface.ts",
+      "!**/*.dto.ts",
+      "!**/node_modules/**"
     ],
     "coverageDirectory": "../coverage",
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "moduleNameMapper": {
+      "^generated/prisma/(.*)$": "<rootDir>/../generated/prisma/$1"
+    },
+    "preset": "ts-jest"
   }
 }
