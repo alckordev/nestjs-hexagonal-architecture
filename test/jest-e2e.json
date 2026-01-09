@@ -5,5 +5,10 @@
   "testRegex": ".e2e-spec.ts$",
   "transform": {
     "^.+\\.(t|j)s$": "ts-jest"
-  }
+  },
+  "moduleNameMapper": {
+    "^generated/prisma/(.*)$": "<rootDir>/../generated/prisma/$1",
+    "^(\\.{1,2}/.*)\\.js$": "$1"
+  },
+  "setupFilesAfterEnv": ["<rootDir>/setup/jest-e2e.setup.ts"]
 }

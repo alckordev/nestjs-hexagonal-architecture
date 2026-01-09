@@ -100,7 +100,7 @@ pnpm test:e2e users.e2e-spec.ts
 
 **Note:** E2E tests require a database connection. Make sure to:
 
-1. Set up a test database in your `.env.test` or environment variables
+1. Set up a test database or use your development database
 2. Run database migrations: `pnpm prisma migrate dev`
 3. Ensure `DATABASE_URL` is properly configured
 
