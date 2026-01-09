@@ -6,6 +6,7 @@ import {
   CreateUserData,
   UpdateUserData,
 } from '../../domain/ports/user.repository.port';
+import type { Prisma } from 'generated/prisma/client';
 
 @Injectable()
 export class PrismaUserRepositoryAdapter implements IUserRepository {
@@ -76,8 +77,8 @@ export class PrismaUserRepositoryAdapter implements IUserRepository {
       orderBy: { createdAt: 'desc' },
     });
 
-    return prismaUsers.map((prismaUser) =>
-      User.fromPrisma({
+    return prismaUsers.map((prismaUser) => {
+      return User.fromPrisma({
         id: prismaUser.id,
         email: prismaUser.email,
         name: prismaUser.name,
@@ -85,12 +86,12 @@ export class PrismaUserRepositoryAdapter implements IUserRepository {
         isActive: prismaUser.isActive,
         createdAt: prismaUser.createdAt,
         updatedAt: prismaUser.updatedAt,
-      }),
-    );
+      });
+    });
   }
 
   async update(id: string, data: UpdateUserData): Promise<User> {
-    const updateData: any = {};
+    const updateData: Prisma.UserUpdateInput = {};
 
     if (data.email !== undefined) {
       updateData.email = data.email;
