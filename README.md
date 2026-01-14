@@ -23,12 +23,70 @@
 
 ## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+NestJS application built with **Hexagonal Architecture** (Ports and Adapters). This project demonstrates a clean architecture approach with clear separation between domain, application, and infrastructure layers.
+
+### Architecture Overview
+
+This project follows **Hexagonal Architecture** principles:
+
+- **Domain Layer**: Contains business entities and ports (interfaces)
+- **Application Layer**: Contains use cases (business logic) and DTOs
+- **Infrastructure Layer**: Contains adapters (implementations) and controllers
+
+### Project Structure
+
+```
+src/
+├── shared/
+│   └── infrastructure/
+│       ├── config/          # Configuration utilities
+│       └── database/        # Database adapters (Prisma)
+├── users/
+│   ├── domain/              # Domain layer
+│   │   ├── entities/        # Domain entities
+│   │   └── ports/           # Repository interfaces (ports)
+│   ├── application/         # Application layer
+│   │   ├── dto/             # Data Transfer Objects
+│   │   └── use-cases/       # Business logic (use cases)
+│   └── infrastructure/      # Infrastructure layer
+│       ├── adapters/        # Repository implementations (adapters)
+│       └── controllers/     # REST controllers
+└── app.module.ts            # Root module
+```
 
 ## Project setup
 
+### Prerequisites
+
+- Node.js (v18 or higher)
+- pnpm (package manager)
+- PostgreSQL database
+
+### Installation
+
 ```bash
 $ pnpm install
+```
+
+### Database Setup
+
+1. Create a PostgreSQL database
+2. Create `.env.development` file in the root:
+
+```env
+POSTGRES_USER=your_user
+POSTGRES_PASSWORD=your_password
+POSTGRES_HOSTNAME=localhost
+POSTGRES_DB=your_database
+DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOSTNAME}:5432/${POSTGRES_DB}?schema=public
+NODE_ENV=development
+```
+
+3. Generate Prisma Client and run migrations:
+
+```bash
+$ pnpm prisma:generate
+$ pnpm prisma:migrate
 ```
 
 ## Compile and run the project
@@ -50,11 +108,90 @@ $ pnpm run start:prod
 # unit tests
 $ pnpm run test
 
-# e2e tests
+# e2e tests (requires test database)
 $ pnpm run test:e2e
 
 # test coverage
 $ pnpm run test:cov
+
+# tests in watch mode
+$ pnpm run test:watch
+```
+
+**Note:** E2E tests require a test database. See [TESTING.md](./TESTING.md) for more details.
+
+## Path Aliases
+
+This project uses path aliases to avoid relative imports (`../../`). Configured aliases:
+
+```typescript
+// Shared/Infrastructure
+'@shared/*'           → 'src/shared/*'
+'@config/*'           → 'src/shared/infrastructure/config/*'
+'@database/*'         → 'src/shared/infrastructure/database/*'
+
+// Users module
+'@users/*'            → 'src/users/*'
+'@users/domain/*'     → 'src/users/domain/*'
+'@users/application/*' → 'src/users/application/*'
+'@users/infrastructure/*' → 'src/users/infrastructure/*'
+```
+
+### Usage Example
+
+```typescript
+// ❌ Before (relative imports)
+import { User } from '../../domain/entities/user.entity';
+import { CreateUserDto } from '../dto/create-user.dto';
+
+// ✅ After (path aliases)
+import { User } from '@users/domain/entities/user.entity';
+import { CreateUserDto } from '@users/application/dto/create-user.dto';
+```
+
+## Environment Variables
+
+The project supports multiple environment files with automatic variable expansion:
+
+- `.env.development` - Development environment
+- `.env.test` - Test environment
+- `.env.staging` - Staging environment
+- `.env.production` - Production environment
+
+**Variable Expansion:** The project automatically expands variables like `${VAR_NAME}` using `ConfigModule` with `expandVariables: true`.
+
+Example:
+
+```env
+DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOSTNAME}:5432/${POSTGRES_DB}
+```
+
+The system loads environment files dynamically based on `NODE_ENV` with fallback priority:
+
+1. `.env.{NODE_ENV}` (environment-specific)
+2. `.env.development` (fallback for non-production)
+3. `.env` (base fallback)
+
+## Available Scripts
+
+```bash
+# Development
+pnpm start:dev          # Start in watch mode
+pnpm start:debug        # Start in debug mode
+
+# Testing
+pnpm test               # Run unit tests
+pnpm test:watch         # Run tests in watch mode
+pnpm test:cov           # Run tests with coverage
+pnpm test:e2e           # Run E2E tests
+
+# Database
+pnpm prisma:generate    # Generate Prisma Client
+pnpm prisma:migrate     # Run database migrations
+
+# Code Quality
+pnpm lint               # Lint code
+pnpm format             # Format code with Prettier
 ```
 
 ## Deployment
