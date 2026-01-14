@@ -2,9 +2,11 @@ import {
   IsOptional,
   IsString,
   IsNumber,
+  IsEnum,
   Min,
   MaxLength,
 } from 'class-validator';
+import { InvoiceStatus } from '@invoices/domain/enums/invoice-status.enum';
 
 export class UpdateInvoiceDto {
   @IsOptional()
@@ -20,6 +22,8 @@ export class UpdateInvoiceDto {
   description?: string;
 
   @IsOptional()
-  @IsString({ message: 'status must be a string' })
-  status?: string;
+  @IsEnum(InvoiceStatus, {
+    message: `status must be one of: ${Object.values(InvoiceStatus).join(', ')}`,
+  })
+  status?: InvoiceStatus;
 }

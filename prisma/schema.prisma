@@ -14,6 +14,14 @@ datasource db {
   provider = "postgresql"
 }
 
+enum InvoiceStatus {
+  PENDING
+  PAID
+  CANCELLED
+  OVERDUE
+  REFUNDED
+}
+
 model User {
   id        String    @id @default(uuid())
   email     String    @unique
@@ -28,14 +36,14 @@ model User {
 }
 
 model Invoice {
-  id          String   @id @default(uuid())
-  userId      String   @map("user_id")
-  amount      Decimal  @db.Decimal(10, 2)
+  id          String        @id @default(uuid())
+  userId      String        @map("user_id")
+  amount      Decimal       @db.Decimal(10, 2)
   description String?
-  status      String   @default("pending")
-  createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @updatedAt @map("updated_at")
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  status      InvoiceStatus @default(PENDING)
+  createdAt   DateTime      @default(now()) @map("created_at")
+  updatedAt   DateTime      @updatedAt @map("updated_at")
+  user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("invoices")
   @@index([userId])

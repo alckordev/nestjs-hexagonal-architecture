@@ -18,7 +18,7 @@ export class PrismaInvoiceRepositoryAdapter implements IInvoiceRepository {
         userId: data.userId,
         amount: data.amount,
         description: data.description,
-        status: data.status || 'pending',
+        status: data.status || 'PENDING',
       },
     });
 

@@ -1,10 +1,12 @@
+import { InvoiceStatus } from '../enums/invoice-status.enum';
+
 export class Invoice {
   constructor(
     public readonly id: string,
     public readonly userId: string,
     public readonly amount: number,
     public readonly description: string | null,
-    public readonly status: string,
+    public readonly status: InvoiceStatus,
     public readonly createdAt: Date,
     public readonly updatedAt: Date,
   ) {}
@@ -14,7 +16,7 @@ export class Invoice {
     userId: string;
     amount: number | string | { toString(): string };
     description: string | null;
-    status: string;
+    status: InvoiceStatus | string;
     createdAt: Date;
     updatedAt: Date;
   }): Invoice {
@@ -34,7 +36,7 @@ export class Invoice {
       data.userId,
       amountValue,
       data.description,
-      data.status,
+      data.status as InvoiceStatus,
       data.createdAt,
       data.updatedAt,
     );

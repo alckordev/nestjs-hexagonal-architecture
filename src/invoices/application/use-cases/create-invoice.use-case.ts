@@ -2,6 +2,7 @@ import { Injectable, Inject } from '@nestjs/common';
 import { Invoice } from '@invoices/domain/entities/invoice.entity';
 import type { IInvoiceRepository } from '@invoices/domain/ports/invoice.repository.port';
 import { INVOICE_REPOSITORY_TOKEN } from '@invoices/domain/ports/invoice.repository.token';
+import { InvoiceStatus } from '@invoices/domain/enums/invoice-status.enum';
 import { CreateInvoiceDto } from '@invoices/application/dto/create-invoice.dto';
 
 @Injectable()
@@ -16,7 +17,7 @@ export class CreateInvoiceUseCase {
       userId: createInvoiceDto.userId,
       amount: createInvoiceDto.amount,
       description: createInvoiceDto.description,
-      status: createInvoiceDto.status || 'pending',
+      status: createInvoiceDto.status || InvoiceStatus.PENDING,
     });
   }
 }

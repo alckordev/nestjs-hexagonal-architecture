@@ -4,9 +4,11 @@ import {
   IsNumber,
   IsOptional,
   IsUUID,
+  IsEnum,
   Min,
   MaxLength,
 } from 'class-validator';
+import { InvoiceStatus } from '@invoices/domain/enums/invoice-status.enum';
 
 export class CreateInvoiceDto {
   @IsUUID(4, { message: 'userId must be a valid UUID' })
@@ -26,6 +28,8 @@ export class CreateInvoiceDto {
   description?: string;
 
   @IsOptional()
-  @IsString({ message: 'status must be a string' })
-  status?: string;
+  @IsEnum(InvoiceStatus, {
+    message: `status must be one of: ${Object.values(InvoiceStatus).join(', ')}`,
+  })
+  status?: InvoiceStatus;
 }
