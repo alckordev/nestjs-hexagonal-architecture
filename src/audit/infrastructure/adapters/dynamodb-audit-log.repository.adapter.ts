@@ -41,7 +41,6 @@ export class DynamoDBAuditLogRepositoryAdapter implements IAuditLogRepository {
       userAgent: data.userAgent || null,
       // GSI keys
       entityTypeEntityId: `${data.entityType}#${data.entityId}`,
-      userIdAction: data.userId ? `${data.userId}#${data.action}` : null,
     };
 
     await docClient.send(
@@ -113,25 +112,19 @@ export class DynamoDBAuditLogRepositoryAdapter implements IAuditLogRepository {
   async findByUser(userId: string): Promise<AuditLog[]> {
     const docClient = this.dynamoDBService.getDocumentClient();
 
-    // Query using GSI - Note: This is a simplified implementation
-    // In production, you'd need a GSI with userId as partition key
-    // For now, we'll use a scan (not ideal for production, but works for MVP)
     const result = await docClient.send(
       new QueryCommand({
         TableName: this.tableName,
-        IndexName: 'UserIdActionIndex',
-        KeyConditionExpression: 'userIdAction = :userIdPrefix',
+        IndexName: 'UserIdIndex',
+        KeyConditionExpression: 'userId = :userId',
         ExpressionAttributeValues: {
-          ':userIdPrefix': `${userId}#`,
+          ':userId': userId,
         },
-        ScanIndexForward: false,
+        ScanIndexForward: false, // Descending order (newest first)
       }),
     );
 
-    // Filter results by userId since we're using a prefix
-    const items = (result.Items || []).filter((item) => item.userId === userId);
-
-    return items.map((item) =>
+    return (result.Items || []).map((item) =>
       AuditLog.fromDynamoDB(
         item as Parameters<typeof AuditLog.fromDynamoDB>[0],
       ),
