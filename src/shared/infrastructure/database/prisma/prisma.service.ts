@@ -29,6 +29,8 @@ export class PrismaService
       ],
     });
 
+    this.logger.log(config.get<string>('DATABASE_URL'));
+
     if (config.get<string>('NODE_ENV') === 'development') {
       this.$on('query' as never, (e: Prisma.QueryEvent) => {
         if (config.get<string>('NODE_ENV') === 'development') {
