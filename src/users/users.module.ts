@@ -7,8 +7,10 @@ import { UpdateUserUseCase } from './application/use-cases/update-user.use-case'
 import { DeleteUserUseCase } from './application/use-cases/delete-user.use-case';
 import { PrismaUserRepositoryAdapter } from './infrastructure/adapters/prisma-user.repository.adapter';
 import { USER_REPOSITORY_TOKEN } from './domain/ports/user.repository.token';
+import { AuditModule } from '@audit/audit.module';
 
 @Module({
+  imports: [AuditModule],
   controllers: [UsersController],
   providers: [
     // Use cases

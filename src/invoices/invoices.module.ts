@@ -8,8 +8,10 @@ import { UpdateInvoiceUseCase } from './application/use-cases/update-invoice.use
 import { DeleteInvoiceUseCase } from './application/use-cases/delete-invoice.use-case';
 import { PrismaInvoiceRepositoryAdapter } from './infrastructure/adapters/prisma-invoice.repository.adapter';
 import { INVOICE_REPOSITORY_TOKEN } from './domain/ports/invoice.repository.token';
+import { AuditModule } from '@audit/audit.module';
 
 @Module({
+  imports: [AuditModule],
   controllers: [InvoicesController],
   providers: [
     // Use cases

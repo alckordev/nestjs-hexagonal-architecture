@@ -7,6 +7,7 @@ import { GetAuditLogsByUserUseCase } from './application/use-cases/get-audit-log
 import { GetAuditLogsByActionUseCase } from './application/use-cases/get-audit-logs-by-action.use-case';
 import { DynamoDBAuditLogRepositoryAdapter } from './infrastructure/adapters/dynamodb-audit-log.repository.adapter';
 import { AUDIT_LOG_REPOSITORY_TOKEN } from './domain/ports/audit-log.repository.token';
+import { AuditService } from './application/services/audit.service';
 
 @Module({
   controllers: [AuditLogsController],
@@ -17,6 +18,8 @@ import { AUDIT_LOG_REPOSITORY_TOKEN } from './domain/ports/audit-log.repository.
     GetAuditLogsByEntityUseCase,
     GetAuditLogsByUserUseCase,
     GetAuditLogsByActionUseCase,
+    // Services
+    AuditService,
     // Repository (port implementation)
     {
       provide: AUDIT_LOG_REPOSITORY_TOKEN,
@@ -29,6 +32,7 @@ import { AUDIT_LOG_REPOSITORY_TOKEN } from './domain/ports/audit-log.repository.
     CreateAuditLogUseCase,
     GetAuditLogUseCase,
     GetAuditLogsByEntityUseCase,
+    AuditService, // Export AuditService so other modules can use it
   ],
 })
 export class AuditModule {}
