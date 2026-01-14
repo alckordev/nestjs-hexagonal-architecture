@@ -1,8 +1,10 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { PrismaModule } from '@database/prisma/prisma.module';
+import { DynamoDBModule } from '@database/dynamodb/dynamodb.module';
 import { UsersModule } from '@users/users.module';
 import { InvoicesModule } from '@invoices/invoices.module';
+import { AuditModule } from '@audit/audit.module';
 import { getEnvFilePaths } from '@config/env-file-path.util';
 
 @Module({
@@ -13,8 +15,10 @@ import { getEnvFilePaths } from '@config/env-file-path.util';
       envFilePath: getEnvFilePaths(),
     }),
     PrismaModule,
+    DynamoDBModule,
     UsersModule,
     InvoicesModule,
+    AuditModule,
   ],
   providers: [],
 })

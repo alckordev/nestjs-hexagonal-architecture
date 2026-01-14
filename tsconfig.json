@@ -25,7 +25,11 @@
       "@invoices/*": ["src/invoices/*"],
       "@invoices/domain/*": ["src/invoices/domain/*"],
       "@invoices/application/*": ["src/invoices/application/*"],
-      "@invoices/infrastructure/*": ["src/invoices/infrastructure/*"]
+      "@invoices/infrastructure/*": ["src/invoices/infrastructure/*"],
+      "@audit/*": ["src/audit/*"],
+      "@audit/domain/*": ["src/audit/domain/*"],
+      "@audit/application/*": ["src/audit/application/*"],
+      "@audit/infrastructure/*": ["src/audit/infrastructure/*"]
     },
     "incremental": true,
     "skipLibCheck": true,
