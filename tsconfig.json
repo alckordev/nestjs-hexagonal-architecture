@@ -14,6 +14,15 @@
     "sourceMap": true,
     "outDir": "./dist",
     "baseUrl": "./",
+    "paths": {
+      "@shared/*": ["src/shared/*"],
+      "@config/*": ["src/shared/infrastructure/config/*"],
+      "@database/*": ["src/shared/infrastructure/database/*"],
+      "@users/*": ["src/users/*"],
+      "@users/domain/*": ["src/users/domain/*"],
+      "@users/application/*": ["src/users/application/*"],
+      "@users/infrastructure/*": ["src/users/infrastructure/*"]
+    },
     "incremental": true,
     "skipLibCheck": true,
     "strictNullChecks": true,

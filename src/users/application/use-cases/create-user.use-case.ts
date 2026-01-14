@@ -1,7 +1,7 @@
 import { Injectable, ConflictException, Inject } from '@nestjs/common';
-import { User } from '../../domain/entities/user.entity';
-import type { IUserRepository } from '../../domain/ports/user.repository.port';
-import { CreateUserDto } from '../dto/create-user.dto';
+import { User } from '@users/domain/entities/user.entity';
+import type { IUserRepository } from '@users/domain/ports/user.repository.port';
+import { CreateUserDto } from '@users/application/dto/create-user.dto';
 
 @Injectable()
 export class CreateUserUseCase {

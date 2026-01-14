@@ -4,9 +4,9 @@ import {
   ConflictException,
   Inject,
 } from '@nestjs/common';
-import { User } from '../../domain/entities/user.entity';
-import type { IUserRepository } from '../../domain/ports/user.repository.port';
-import { UpdateUserDto } from '../dto/update-user.dto';
+import { User } from '@users/domain/entities/user.entity';
+import type { IUserRepository } from '@users/domain/ports/user.repository.port';
+import { UpdateUserDto } from '@users/application/dto/update-user.dto';
 
 @Injectable()
 export class UpdateUserUseCase {

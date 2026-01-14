@@ -9,14 +9,15 @@ import {
   HttpCode,
   HttpStatus,
 } from '@nestjs/common';
-import { CreateUserUseCase } from '../../application/use-cases/create-user.use-case';
-import { GetUserUseCase } from '../../application/use-cases/get-user.use-case';
-import { GetAllUsersUseCase } from '../../application/use-cases/get-all-users.use-case';
-import { UpdateUserUseCase } from '../../application/use-cases/update-user.use-case';
-import { DeleteUserUseCase } from '../../application/use-cases/delete-user.use-case';
-import { CreateUserDto } from '../../application/dto/create-user.dto';
-import { UpdateUserDto } from '../../application/dto/update-user.dto';
-import { UserResponseDto } from '../../application/dto/user-response.dto';
+import { CreateUserUseCase } from '@users/application/use-cases/create-user.use-case';
+import { GetUserUseCase } from '@users/application/use-cases/get-user.use-case';
+import { GetAllUsersUseCase } from '@users/application/use-cases/get-all-users.use-case';
+import { UpdateUserUseCase } from '@users/application/use-cases/update-user.use-case';
+import { DeleteUserUseCase } from '@users/application/use-cases/delete-user.use-case';
+import { CreateUserDto } from '@users/application/dto/create-user.dto';
+import { UpdateUserDto } from '@users/application/dto/update-user.dto';
+import { UserResponseDto } from '@users/application/dto/user-response.dto';
+import { User } from '@users/domain/entities/user.entity';
 
 @Controller('users')
 export class UsersController {
@@ -62,14 +63,7 @@ export class UsersController {
     await this.deleteUserUseCase.execute(id);
   }
 
-  private mapToResponseDto(user: {
-    id: string;
-    email: string;
-    name: string;
-    isActive: boolean;
-    createdAt: Date;
-    updatedAt: Date;
-  }): UserResponseDto {
+  private mapToResponseDto(user: User): UserResponseDto {
     return {
       id: user.id,
       email: user.email,

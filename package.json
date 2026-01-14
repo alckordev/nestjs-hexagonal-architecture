@@ -83,7 +83,14 @@
     "coverageDirectory": "../coverage",
     "testEnvironment": "node",
     "moduleNameMapper": {
-      "^generated/prisma/(.*)$": "<rootDir>/../generated/prisma/$1"
+      "^generated/prisma/(.*)$": "<rootDir>/../generated/prisma/$1",
+      "^@shared/(.*)$": "<rootDir>/shared/$1",
+      "^@config/(.*)$": "<rootDir>/shared/infrastructure/config/$1",
+      "^@database/(.*)$": "<rootDir>/shared/infrastructure/database/$1",
+      "^@users/(.*)$": "<rootDir>/users/$1",
+      "^@users/domain/(.*)$": "<rootDir>/users/domain/$1",
+      "^@users/application/(.*)$": "<rootDir>/users/application/$1",
+      "^@users/infrastructure/(.*)$": "<rootDir>/users/infrastructure/$1"
     },
     "preset": "ts-jest"
   }
