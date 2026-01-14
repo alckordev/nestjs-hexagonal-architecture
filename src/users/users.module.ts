@@ -6,6 +6,7 @@ import { GetAllUsersUseCase } from './application/use-cases/get-all-users.use-ca
 import { UpdateUserUseCase } from './application/use-cases/update-user.use-case';
 import { DeleteUserUseCase } from './application/use-cases/delete-user.use-case';
 import { PrismaUserRepositoryAdapter } from './infrastructure/adapters/prisma-user.repository.adapter';
+import { USER_REPOSITORY_TOKEN } from './domain/ports/user.repository.token';
 
 @Module({
   controllers: [UsersController],
@@ -18,7 +19,7 @@ import { PrismaUserRepositoryAdapter } from './infrastructure/adapters/prisma-us
     DeleteUserUseCase,
     // Repository (port implementation)
     {
-      provide: 'IUserRepository',
+      provide: USER_REPOSITORY_TOKEN,
       useClass: PrismaUserRepositoryAdapter,
     },
     // Also provide the adapter directly for injection

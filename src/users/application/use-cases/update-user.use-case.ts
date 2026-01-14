@@ -6,18 +6,19 @@ import {
 } from '@nestjs/common';
 import { User } from '@users/domain/entities/user.entity';
 import type { IUserRepository } from '@users/domain/ports/user.repository.port';
+import { USER_REPOSITORY_TOKEN } from '@users/domain/ports/user.repository.token';
 import { UpdateUserDto } from '@users/application/dto/update-user.dto';
 
 @Injectable()
 export class UpdateUserUseCase {
   constructor(
-    @Inject('IUserRepository')
-    private readonly userRepository: IUserRepository,
+    @Inject(USER_REPOSITORY_TOKEN)
+    private readonly repository: IUserRepository,
   ) {}
 
   async execute(id: string, updateUserDto: UpdateUserDto): Promise<User> {
     // Check if user exists
-    const existingUser = await this.userRepository.findById(id);
+    const existingUser = await this.repository.findById(id);
 
     if (!existingUser) {
       throw new NotFoundException(`User with id ${id} not found`);
@@ -25,7 +26,7 @@ export class UpdateUserUseCase {
 
     // If updating email, verify it's not already in use by another user
     if (updateUserDto.email && updateUserDto.email !== existingUser.email) {
-      const userWithEmail = await this.userRepository.findByEmail(
+      const userWithEmail = await this.repository.findByEmail(
         updateUserDto.email,
       );
 
@@ -36,6 +37,6 @@ export class UpdateUserUseCase {
       }
     }
 
-    return await this.userRepository.update(id, updateUserDto);
+    return await this.repository.update(id, updateUserDto);
   }
 }

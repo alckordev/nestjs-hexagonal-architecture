@@ -90,7 +90,11 @@
       "^@users/(.*)$": "<rootDir>/users/$1",
       "^@users/domain/(.*)$": "<rootDir>/users/domain/$1",
       "^@users/application/(.*)$": "<rootDir>/users/application/$1",
-      "^@users/infrastructure/(.*)$": "<rootDir>/users/infrastructure/$1"
+      "^@users/infrastructure/(.*)$": "<rootDir>/users/infrastructure/$1",
+      "^@invoices/(.*)$": "<rootDir>/invoices/$1",
+      "^@invoices/domain/(.*)$": "<rootDir>/invoices/domain/$1",
+      "^@invoices/application/(.*)$": "<rootDir>/invoices/application/$1",
+      "^@invoices/infrastructure/(.*)$": "<rootDir>/invoices/infrastructure/$1"
     },
     "preset": "ts-jest"
   }
