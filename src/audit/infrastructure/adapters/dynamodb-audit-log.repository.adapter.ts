@@ -28,20 +28,34 @@ export class DynamoDBAuditLogRepositoryAdapter implements IAuditLogRepository {
     const id = uuid();
     const createdAt = Date.now();
 
-    const item = {
+    // Build item without null values (DynamoDB doesn't support null)
+    const item: Record<string, unknown> = {
       id,
       entityType: data.entityType,
       entityId: data.entityId,
       action: data.action,
-      userId: data.userId || null,
-      changes: data.changes || null,
-      metadata: data.metadata || null,
       createdAt,
-      ipAddress: data.ipAddress || null,
-      userAgent: data.userAgent || null,
       // GSI keys
       entityTypeEntityId: `${data.entityType}#${data.entityId}`,
     };
+
+    // Only add optional fields if they have values (not null/undefined)
+    // DynamoDB doesn't support null values
+    if (data.userId != null) {
+      item.userId = data.userId;
+    }
+    if (data.changes != null) {
+      item.changes = data.changes;
+    }
+    if (data.metadata != null) {
+      item.metadata = data.metadata;
+    }
+    if (data.ipAddress != null) {
+      item.ipAddress = data.ipAddress;
+    }
+    if (data.userAgent != null) {
+      item.userAgent = data.userAgent;
+    }
 
     await docClient.send(
       new PutCommand({
