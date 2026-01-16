@@ -10,9 +10,11 @@ This guide explains how to set up SonarQube Cloud integration with GitHub Action
 ## Step 1: Configure SonarQube Cloud Project
 
 1. Log in to [SonarQube Cloud](https://sonarcloud.io)
-2. Go to **Projects** → **Create Project** → **From GitHub**
-3. Select your GitHub organization/user and repository
-4. SonarQube will create a project key (e.g., `nestjs-hexagonal-architecture`)
+2. Note your **Organization Key** (visible in the top navigation or in **My Account** → **Organizations**)
+3. Go to **Projects** → **Create Project** → **From GitHub**
+4. Select your GitHub organization/user and repository
+5. SonarQube will create a project key (e.g., `nestjs-hexagonal-architecture`)
+6. Update `sonar-project.properties` with your organization key (replace `your-organization-key` with your actual organization key)
 
 ## Step 2: Generate SonarQube Token
 
