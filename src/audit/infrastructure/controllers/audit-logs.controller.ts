@@ -46,7 +46,7 @@ export class AuditLogsController {
     @Param('action') action: string,
     @Query('limit') limit?: string,
   ): Promise<AuditLogResponseDto[]> {
-    const limitNum = limit ? parseInt(limit, 10) : undefined;
+    const limitNum = limit ? Number.parseInt(limit, 10) : undefined;
     const auditLogs = await this.getAuditLogsByActionUseCase.execute(
       action,
       limitNum,

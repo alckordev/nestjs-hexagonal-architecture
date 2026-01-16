@@ -11,8 +11,8 @@ import { DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb';
 @Injectable()
 export class DynamoDBService implements OnModuleInit, OnModuleDestroy {
   private readonly logger = new Logger(DynamoDBService.name);
-  private client: DynamoDBClient;
-  private docClient: DynamoDBDocumentClient;
+  private readonly client: DynamoDBClient;
+  private readonly docClient: DynamoDBDocumentClient;
 
   constructor(private readonly config: ConfigService) {
     const region = config.get<string>('AWS_REGION', 'us-east-1');

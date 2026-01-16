@@ -32,9 +32,7 @@ export class AuditLog {
       data.userId || null,
       data.changes || null,
       data.metadata || null,
-      typeof data.createdAt === 'string'
-        ? new Date(data.createdAt)
-        : new Date(data.createdAt),
+      new Date(data.createdAt),
       data.ipAddress || null,
       data.userAgent || null,
     );

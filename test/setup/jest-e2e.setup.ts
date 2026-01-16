@@ -7,8 +7,8 @@
 
 import { config } from 'dotenv';
 import { expand } from 'dotenv-expand';
-import { existsSync } from 'fs';
-import { join } from 'path';
+import { existsSync } from 'node:fs';
+import { join } from 'node:path';
 
 // Set NODE_ENV to test if not already set
 process.env.NODE_ENV = process.env.NODE_ENV || 'test';
