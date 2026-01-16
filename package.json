@@ -99,7 +99,7 @@
       "^@invoices/domain/(.*)$": "<rootDir>/invoices/domain/$1",
       "^@invoices/application/(.*)$": "<rootDir>/invoices/application/$1",
       "^@invoices/infrastructure/(.*)$": "<rootDir>/invoices/infrastructure/$1",
-      "^@audit/*": "<rootDir>/audit/$1",
+      "^@audit/(.*)$": "<rootDir>/audit/$1",
       "^@audit/domain/(.*)$": "<rootDir>/audit/domain/$1",
       "^@audit/application/(.*)$": "<rootDir>/audit/application/$1",
       "^@audit/infrastructure/(.*)$": "<rootDir>/audit/infrastructure/$1"
