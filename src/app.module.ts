@@ -5,6 +5,7 @@ import { DynamoDBModule } from '@database/dynamodb/dynamodb.module';
 import { UsersModule } from '@users/users.module';
 import { InvoicesModule } from '@invoices/invoices.module';
 import { AuditModule } from '@audit/audit.module';
+import { AuthModule } from '@auth/auth.module';
 import { getEnvFilePaths } from '@config/env-file-path.util';
 
 @Module({
@@ -16,6 +17,7 @@ import { getEnvFilePaths } from '@config/env-file-path.util';
     }),
     PrismaModule,
     DynamoDBModule,
+    AuthModule,
     UsersModule,
     InvoicesModule,
     AuditModule,

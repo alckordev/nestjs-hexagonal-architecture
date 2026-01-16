@@ -29,7 +29,11 @@
       "@audit/*": ["src/audit/*"],
       "@audit/domain/*": ["src/audit/domain/*"],
       "@audit/application/*": ["src/audit/application/*"],
-      "@audit/infrastructure/*": ["src/audit/infrastructure/*"]
+      "@audit/infrastructure/*": ["src/audit/infrastructure/*"],
+      "@auth/*": ["src/auth/*"],
+      "@auth/domain/*": ["src/auth/domain/*"],
+      "@auth/application/*": ["src/auth/application/*"],
+      "@auth/infrastructure/*": ["src/auth/infrastructure/*"]
     },
     "incremental": true,
     "skipLibCheck": true,

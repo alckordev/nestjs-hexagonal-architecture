@@ -27,6 +27,11 @@ import { AuditModule } from '@audit/audit.module';
     // Also provide the adapter directly for injection
     PrismaUserRepositoryAdapter,
   ],
-  exports: [CreateUserUseCase, GetUserUseCase, GetAllUsersUseCase],
+  exports: [
+    CreateUserUseCase,
+    GetUserUseCase,
+    GetAllUsersUseCase,
+    USER_REPOSITORY_TOKEN, // Export repository token for use in other modules (e.g., AuthModule)
+  ],
 })
 export class UsersModule {}
