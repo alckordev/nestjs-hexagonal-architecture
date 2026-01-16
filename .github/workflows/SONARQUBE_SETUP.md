@@ -7,14 +7,19 @@ This guide explains how to set up SonarQube Cloud integration with GitHub Action
 1. A SonarQube Cloud account (sign up at https://sonarcloud.io)
 2. A GitHub repository
 
-## Step 1: Configure SonarQube Cloud Project
+## Step 1: Create SonarQube Cloud Project
+
+**IMPORTANT**: You must create the project in SonarQube Cloud before running the scan.
 
 1. Log in to [SonarQube Cloud](https://sonarcloud.io)
 2. Note your **Organization Key** (visible in the top navigation or in **My Account** → **Organizations**)
 3. Go to **Projects** → **Create Project** → **From GitHub**
 4. Select your GitHub organization/user and repository
-5. SonarQube will create a project key (e.g., `nestjs-hexagonal-architecture`)
-6. Update `sonar-project.properties` with your organization key (replace `your-organization-key` with your actual organization key)
+5. SonarQube will create a project with a key (e.g., `alckordev_nestjs-hexagonal-architecture`)
+6. **Verify the project key** in the project settings (it might be prefixed with your organization key)
+7. Update `sonar-project.properties`:
+   - Set `sonar.organization` to your organization key (e.g., `alckordev`)
+   - Ensure `sonar.projectKey` matches the project key in SonarQube Cloud (check project settings if unsure)
 
 ## Step 2: Generate SonarQube Token
 
@@ -59,6 +64,8 @@ Push the workflow file to your repository. The analysis will run automatically o
 
 ## Troubleshooting
 
+- **Project does not exist error**: The project must be created in SonarQube Cloud before running the scan. Go to SonarQube Cloud → Projects → Create Project → From GitHub
 - **Token issues**: Ensure `SONAR_TOKEN` is correctly set in GitHub Secrets
-- **Project key mismatch**: Verify `sonar.projectKey` in `sonar-project.properties` matches your SonarQube project
+- **Project key mismatch**: Verify `sonar.projectKey` in `sonar-project.properties` matches your SonarQube project key (check project settings in SonarQube Cloud)
+- **Organization key**: Make sure `sonar.organization` in `sonar-project.properties` matches your SonarQube organization key
 - **Coverage not showing**: Ensure `jest` is configured to generate `lcov.info` in the `coverage` directory
