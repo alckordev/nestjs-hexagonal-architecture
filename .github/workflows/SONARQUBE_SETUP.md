@@ -43,11 +43,22 @@ Go to your GitHub repository → **Settings** → **Secrets and variables** → 
 - `AWS_DYNAMODB_ENDPOINT`: DynamoDB endpoint
 - `DYNAMODB_AUDIT_TABLE_NAME`: DynamoDB table name
 
-## Step 4: Verify sonar-project.properties
+## Step 4: Disable Automatic Analysis (Required for CI)
+
+To use GitHub Actions for analysis, you must disable Automatic Analysis in SonarQube Cloud:
+
+1. Go to your project in SonarQube Cloud
+2. Navigate to **Project Settings** → **Analysis Method**
+3. Select **With GitHub Actions** (or disable Automatic Analysis)
+4. Click **Save**
+
+This allows the GitHub Actions workflow to control when analysis runs.
+
+## Step 5: Verify sonar-project.properties
 
 Ensure `sonar-project.properties` exists in the root of your repository with the correct `sonar.projectKey` matching your SonarQube Cloud project.
 
-## Step 5: Configure GitHub Actions Permissions
+## Step 6: Configure GitHub Actions Permissions
 
 In your repository settings:
 
@@ -55,7 +66,7 @@ In your repository settings:
 2. Under **Workflow permissions**, select **Read and write permissions**
 3. Check **Allow GitHub Actions to create and approve pull requests**
 
-## Step 6: Push and Test
+## Step 7: Push and Test
 
 Push the workflow file to your repository. The analysis will run automatically on:
 
@@ -64,6 +75,7 @@ Push the workflow file to your repository. The analysis will run automatically o
 
 ## Troubleshooting
 
+- **"CI analysis while Automatic Analysis is enabled" error**: You must disable Automatic Analysis in SonarQube Cloud. Go to Project Settings → Analysis Method → Select "With GitHub Actions" or disable Automatic Analysis
 - **Project does not exist error**: The project must be created in SonarQube Cloud before running the scan. Go to SonarQube Cloud → Projects → Create Project → From GitHub
 - **Token issues**: Ensure `SONAR_TOKEN` is correctly set in GitHub Secrets
 - **Project key mismatch**: Verify `sonar.projectKey` in `sonar-project.properties` matches your SonarQube project key (check project settings in SonarQube Cloud)
