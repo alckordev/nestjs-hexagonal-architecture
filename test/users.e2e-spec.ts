@@ -1,8 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import request from 'supertest';
@@ -41,13 +39,13 @@ describe('UsersController (e2e)', () => {
   afterAll(async () => {
     // Clean up created test data
     if (createdUserId) {
-      try {
-        await prismaService.user.delete({
-          where: { id: createdUserId },
-        });
-      } catch (error) {
-        // Ignore cleanup errors
-      }
+      // try {
+      await prismaService.user.delete({
+        where: { id: createdUserId },
+      });
+      // } catch (error) {
+      //   // Ignore cleanup errors
+      // }
     }
     await app.close();
   });

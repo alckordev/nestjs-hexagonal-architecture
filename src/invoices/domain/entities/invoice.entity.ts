@@ -25,10 +25,10 @@ export class Invoice {
     if (typeof data.amount === 'number') {
       amountValue = data.amount;
     } else if (typeof data.amount === 'string') {
-      amountValue = parseFloat(data.amount);
+      amountValue = Number.parseFloat(data.amount);
     } else {
       // Prisma Decimal object
-      amountValue = parseFloat(data.amount.toString());
+      amountValue = Number.parseFloat(data.amount.toString());
     }
 
     return new Invoice(

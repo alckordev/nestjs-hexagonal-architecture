@@ -64,11 +64,7 @@ if (process.env.DATABASE_URL) {
 }
 
 // Ensure DATABASE_URL is set
-if (!process.env.DATABASE_URL) {
-  console.warn(
-    '⚠️ DATABASE_URL is not set. E2E tests may fail without a database connection.',
-  );
-} else {
+if (process.env.DATABASE_URL) {
   // Check if DATABASE_URL still has unexpanded variables
   if (
     process.env.DATABASE_URL.includes('${') ||
@@ -82,4 +78,8 @@ if (!process.env.DATABASE_URL) {
     );
     console.error('Please ensure all environment variables are defined.');
   }
+} else {
+  console.warn(
+    '⚠️ DATABASE_URL is not set. E2E tests may fail without a database connection.',
+  );
 }
