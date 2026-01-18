@@ -6,7 +6,12 @@ import {
   type IAuditLogRepository,
   CreateAuditLogData,
 } from '@audit/domain/ports/audit-log.repository.port';
-import { PutCommand, GetCommand, QueryCommand } from '@aws-sdk/lib-dynamodb';
+import {
+  PutCommand,
+  GetCommand,
+  QueryCommand,
+  ScanCommand,
+} from '@aws-sdk/lib-dynamodb';
 import { v4 as uuid } from 'uuid';
 
 @Injectable()
@@ -146,13 +151,42 @@ export class DynamoDBAuditLogRepositoryAdapter implements IAuditLogRepository {
   }
 
   async findByAction(action: string, limit = 100): Promise<AuditLog[]> {
-    // Note: This would require a GSI with action as partition key
-    // For MVP, we'll use a scan with filter (not ideal for production)
+    // Note: Using Scan with FilterExpression (not ideal for production)
+    // For better performance, consider adding a GSI with action as partition key
     const docClient = this.dynamoDBService.getDocumentClient();
 
-    // Simplified: In production, use GSI with action as PK
-    // For now, return empty array and log a warning
-    // This should be implemented with proper GSI
-    return [];
+    // Normalize action to uppercase for consistent comparison
+    // Actions are stored in uppercase (e.g., LOGIN, CREATE, UPDATE, DELETE)
+    const normalizedAction = action.toUpperCase();
+
+    // "action" is a reserved keyword in DynamoDB, so we need to use ExpressionAttributeNames
+    const result = await docClient.send(
+      new ScanCommand({
+        TableName: this.tableName,
+        FilterExpression: '#action = :action',
+        ExpressionAttributeNames: {
+          '#action': 'action',
+        },
+        ExpressionAttributeValues: {
+          ':action': normalizedAction,
+        },
+        Limit: limit,
+      }),
+    );
+
+    // Sort by createdAt descending (newest first)
+    const items = (result.Items || []).sort((a, b) => {
+      const aTime = (a.createdAt as number) || 0;
+      const bTime = (b.createdAt as number) || 0;
+      return bTime - aTime;
+    });
+
+    return items
+      .slice(0, limit)
+      .map((item) =>
+        AuditLog.fromDynamoDB(
+          item as Parameters<typeof AuditLog.fromDynamoDB>[0],
+        ),
+      );
   }
 }
