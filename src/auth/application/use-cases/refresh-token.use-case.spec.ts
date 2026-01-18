@@ -30,6 +30,7 @@ describe('RefreshTokenUseCase', () => {
     'Test User',
     'hashedPassword',
     true,
+    null,
     new Date(),
     new Date(),
   );
@@ -228,6 +229,7 @@ describe('RefreshTokenUseCase', () => {
         mockUser.name,
         mockUser.password,
         false,
+        null,
         mockUser.createdAt,
         mockUser.updatedAt,
       );

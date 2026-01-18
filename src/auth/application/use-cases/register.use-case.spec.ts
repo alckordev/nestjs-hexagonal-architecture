@@ -33,6 +33,7 @@ describe('RegisterUseCase', () => {
     registerDto.name,
     'hashedPassword',
     true,
+    null, // deletedAt
     new Date(),
     new Date(),
   );

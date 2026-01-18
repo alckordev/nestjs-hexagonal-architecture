@@ -27,6 +27,7 @@ describe('LoginUseCase', () => {
     'Test User',
     'hashedPassword',
     true,
+    null,
     new Date(),
     new Date(),
   );
@@ -184,6 +185,7 @@ describe('LoginUseCase', () => {
         mockUser.name,
         mockUser.password,
         false,
+        null,
         mockUser.createdAt,
         mockUser.updatedAt,
       );
