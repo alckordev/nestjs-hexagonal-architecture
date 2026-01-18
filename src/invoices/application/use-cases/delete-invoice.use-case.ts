@@ -3,6 +3,7 @@ import {
   NotFoundException,
   Inject,
   Optional,
+  Logger,
 } from '@nestjs/common';
 import type { IInvoiceRepository } from '@invoices/domain/ports/invoice.repository.port';
 import { INVOICE_REPOSITORY_TOKEN } from '@invoices/domain/ports/invoice.repository.token';
@@ -10,6 +11,8 @@ import { AuditService } from '@audit/application/services/audit.service';
 
 @Injectable()
 export class DeleteInvoiceUseCase {
+  private readonly logger = new Logger(DeleteInvoiceUseCase.name);
+
   constructor(
     @Inject(INVOICE_REPOSITORY_TOKEN)
     private readonly repository: IInvoiceRepository,
@@ -47,7 +50,7 @@ export class DeleteInvoiceUseCase {
         })
         .catch((error) => {
           // Log error but don't fail the main operation
-          console.error('Failed to create audit log:', error);
+          this.logger.error('Failed to create audit log', error);
         });
     }
   }

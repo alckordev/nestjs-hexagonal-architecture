@@ -1,4 +1,4 @@
-import { Injectable, Inject, Optional } from '@nestjs/common';
+import { Injectable, Inject, Optional, Logger } from '@nestjs/common';
 import { Invoice } from '@invoices/domain/entities/invoice.entity';
 import type { IInvoiceRepository } from '@invoices/domain/ports/invoice.repository.port';
 import { INVOICE_REPOSITORY_TOKEN } from '@invoices/domain/ports/invoice.repository.token';
@@ -8,6 +8,8 @@ import { AuditService } from '@audit/application/services/audit.service';
 
 @Injectable()
 export class CreateInvoiceUseCase {
+  private readonly logger = new Logger(CreateInvoiceUseCase.name);
+
   constructor(
     @Inject(INVOICE_REPOSITORY_TOKEN)
     private readonly repository: IInvoiceRepository,
@@ -47,7 +49,7 @@ export class CreateInvoiceUseCase {
         })
         .catch((error) => {
           // Log error but don't fail the main operation
-          console.error('Failed to create audit log:', error);
+          this.logger.error('Failed to create audit log', error);
         });
     }
 
