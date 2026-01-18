@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigService } from '@nestjs/config';
 import { DynamoDBService } from '@database/dynamodb/dynamodb.service';
@@ -9,7 +11,6 @@ import {
   QueryCommand,
   ScanCommand,
 } from '@aws-sdk/lib-dynamodb';
-import { DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb';
 
 // Mock uuid before importing the adapter
 jest.mock('uuid', () => ({
@@ -29,9 +30,11 @@ import { DynamoDBAuditLogRepositoryAdapter } from './dynamodb-audit-log.reposito
 
 describe('DynamoDBAuditLogRepositoryAdapter', () => {
   let adapter: DynamoDBAuditLogRepositoryAdapter;
-  let dynamoDBService: jest.Mocked<DynamoDBService>;
-  let configService: jest.Mocked<ConfigService>;
-  let docClient: jest.Mocked<DynamoDBDocumentClient>;
+  // let dynamoDBService: jest.Mocked<DynamoDBService>;
+  // let configService: jest.Mocked<ConfigService>;
+  let docClient: {
+    send: jest.Mock;
+  };
 
   const mockTableName = 'audit-logs';
   const mockId = '123e4567-e89b-12d3-a456-426614174000';
@@ -40,7 +43,7 @@ describe('DynamoDBAuditLogRepositoryAdapter', () => {
   beforeEach(async () => {
     docClient = {
       send: jest.fn(),
-    } as unknown as jest.Mocked<DynamoDBDocumentClient>;
+    };
 
     const mockDynamoDBService = {
       getDocumentClient: jest.fn().mockReturnValue(docClient),
@@ -67,8 +70,8 @@ describe('DynamoDBAuditLogRepositoryAdapter', () => {
     adapter = module.get<DynamoDBAuditLogRepositoryAdapter>(
       DynamoDBAuditLogRepositoryAdapter,
     );
-    dynamoDBService = module.get(DynamoDBService);
-    configService = module.get(ConfigService);
+    // dynamoDBService = module.get(DynamoDBService);
+    // configService = module.get(ConfigService);
   });
 
   afterEach(() => {
@@ -92,9 +95,7 @@ describe('DynamoDBAuditLogRepositoryAdapter', () => {
 
       const result = await adapter.create(createData);
 
-      expect(docClient.send).toHaveBeenCalledWith(
-        expect.any(PutCommand),
-      );
+      expect(docClient.send).toHaveBeenCalledWith(expect.any(PutCommand));
       expect(docClient.send).toHaveBeenCalledWith(
         expect.objectContaining({
           input: expect.objectContaining({
@@ -134,10 +135,8 @@ describe('DynamoDBAuditLogRepositoryAdapter', () => {
 
       const result = await adapter.create(createData);
 
-      expect(docClient.send).toHaveBeenCalledWith(
-        expect.any(PutCommand),
-      );
-      const callArg = (docClient.send as jest.Mock).mock.calls[0][0];
+      expect(docClient.send).toHaveBeenCalledWith(expect.any(PutCommand));
+      const callArg = docClient.send.mock.calls[0][0] as PutCommand;
       expect(callArg.input.Item).not.toHaveProperty('userId');
       expect(callArg.input.Item).not.toHaveProperty('changes');
       expect(callArg.input.Item).not.toHaveProperty('metadata');
@@ -162,9 +161,7 @@ describe('DynamoDBAuditLogRepositoryAdapter', () => {
 
       const result = await adapter.findById(mockId);
 
-      expect(docClient.send).toHaveBeenCalledWith(
-        expect.any(GetCommand),
-      );
+      expect(docClient.send).toHaveBeenCalledWith(expect.any(GetCommand));
       expect(docClient.send).toHaveBeenCalledWith(
         expect.objectContaining({
           input: expect.objectContaining({
@@ -209,9 +206,7 @@ describe('DynamoDBAuditLogRepositoryAdapter', () => {
 
       const result = await adapter.findByEntity('User', 'user-id');
 
-      expect(docClient.send).toHaveBeenCalledWith(
-        expect.any(QueryCommand),
-      );
+      expect(docClient.send).toHaveBeenCalledWith(expect.any(QueryCommand));
       expect(docClient.send).toHaveBeenCalledWith(
         expect.objectContaining({
           input: expect.objectContaining({
@@ -251,9 +246,7 @@ describe('DynamoDBAuditLogRepositoryAdapter', () => {
 
       const result = await adapter.findByUser('user-id');
 
-      expect(docClient.send).toHaveBeenCalledWith(
-        expect.any(QueryCommand),
-      );
+      expect(docClient.send).toHaveBeenCalledWith(expect.any(QueryCommand));
       expect(docClient.send).toHaveBeenCalledWith(
         expect.objectContaining({
           input: expect.objectContaining({
@@ -291,9 +284,7 @@ describe('DynamoDBAuditLogRepositoryAdapter', () => {
 
       const result = await adapter.findByAction('LOGIN', 10);
 
-      expect(docClient.send).toHaveBeenCalledWith(
-        expect.any(ScanCommand),
-      );
+      expect(docClient.send).toHaveBeenCalledWith(expect.any(ScanCommand));
       expect(docClient.send).toHaveBeenCalledWith(
         expect.objectContaining({
           input: expect.objectContaining({
@@ -313,8 +304,10 @@ describe('DynamoDBAuditLogRepositoryAdapter', () => {
 
       await adapter.findByAction('login', 10);
 
-      const callArg = (docClient.send as jest.Mock).mock.calls[0][0];
-      expect(callArg.input.ExpressionAttributeValues[':action']).toBe('LOGIN');
+      const callArg = docClient.send.mock.calls[0][0] as ScanCommand;
+      expect(callArg.input.ExpressionAttributeValues?.[':action']).toBe(
+        'LOGIN',
+      );
     });
 
     it('should use default limit of 100 if not provided', async () => {
@@ -323,7 +316,7 @@ describe('DynamoDBAuditLogRepositoryAdapter', () => {
 
       await adapter.findByAction('LOGIN');
 
-      const callArg = (docClient.send as jest.Mock).mock.calls[0][0];
+      const callArg = docClient.send.mock.calls[0][0] as ScanCommand;
       expect(callArg.input.Limit).toBe(100);
     });
   });
