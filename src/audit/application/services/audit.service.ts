@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { CreateAuditLogUseCase } from '../use-cases/create-audit-log.use-case';
 
 export interface AuditContext {
@@ -14,6 +14,8 @@ export interface AuditContext {
 
 @Injectable()
 export class AuditService {
+  private readonly logger = new Logger(AuditService.name);
+
   constructor(private readonly createAuditLogUseCase: CreateAuditLogUseCase) {}
 
   async log(context: AuditContext): Promise<void> {
@@ -30,8 +32,7 @@ export class AuditService {
       });
     } catch (error) {
       // Log error but don't fail the main operation
-      // In production, you might want to use a logger here
-      console.error('Failed to create audit log:', error);
+      this.logger.error('Failed to create audit log', error);
     }
   }
 }

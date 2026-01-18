@@ -3,6 +3,7 @@ import {
   ConflictException,
   Inject,
   Optional,
+  Logger,
 } from '@nestjs/common';
 import type { IUserRepository } from '@users/domain/ports/user.repository.port';
 import { USER_REPOSITORY_TOKEN } from '@users/domain/ports/user.repository.token';
@@ -16,6 +17,8 @@ import { AuditService } from '@audit/application/services/audit.service';
 
 @Injectable()
 export class RegisterUseCase {
+  private readonly logger = new Logger(RegisterUseCase.name);
+
   constructor(
     @Inject(USER_REPOSITORY_TOKEN)
     private readonly userRepository: IUserRepository,
@@ -86,7 +89,7 @@ export class RegisterUseCase {
           userAgent: auditContext?.userAgent || null,
         })
         .catch((error) => {
-          console.error('Failed to create audit log:', error);
+          this.logger.error('Failed to create audit log', error);
         });
     }
 

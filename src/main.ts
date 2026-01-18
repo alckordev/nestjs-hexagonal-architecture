@@ -1,11 +1,12 @@
 import { NestFactory, Reflector } from '@nestjs/core';
-import { ValidationPipe } from '@nestjs/common';
+import { ValidationPipe, Logger } from '@nestjs/common';
 import { AppModule } from './app.module';
 import { JwtAuthGuard } from '@auth/infrastructure/guards/jwt-auth.guard';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  const logger = new Logger('Bootstrap');
 
   // Configure global ValidationPipe
   app.useGlobalPipes(
@@ -56,10 +57,9 @@ async function bootstrap() {
 
   await app.listen(process.env.PORT ?? 3000);
 
-  console.log(`Server is running on port ${process.env.PORT ?? 3000}`);
-  console.log(`Environment: ${process.env.NODE_ENV}`);
-  console.log(
-    `Swagger is available at http://localhost:${process.env.PORT ?? 3000}/api`,
-  );
+  const port = process.env.PORT ?? 3000;
+  logger.log(`Server is running on port ${port}`);
+  logger.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
+  logger.log(`Swagger is available at http://localhost:${port}/api`);
 }
 void bootstrap();
