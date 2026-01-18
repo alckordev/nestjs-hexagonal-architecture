@@ -21,6 +21,7 @@ describe('UpdateInvoiceUseCase', () => {
     100.5,
     'Original description',
     InvoiceStatus.PENDING,
+    null, // deletedAt
     new Date(),
     new Date(),
   );
@@ -37,6 +38,7 @@ describe('UpdateInvoiceUseCase', () => {
     updateInvoiceDto.amount!,
     updateInvoiceDto.description!,
     updateInvoiceDto.status!,
+    null, // deletedAt
     existingInvoice.createdAt,
     new Date(),
   );

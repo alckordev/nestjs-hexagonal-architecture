@@ -20,6 +20,7 @@ describe('DeleteInvoiceUseCase', () => {
     100.5,
     'Test invoice',
     InvoiceStatus.PENDING,
+    null, // deletedAt
     new Date(),
     new Date(),
   );
@@ -62,7 +63,7 @@ describe('DeleteInvoiceUseCase', () => {
   });
 
   describe('execute', () => {
-    it('should delete an invoice successfully', async () => {
+    it('should soft delete an invoice successfully', async () => {
       repository.findById.mockResolvedValue(existingInvoice);
       repository.delete.mockResolvedValue();
       auditService.log.mockResolvedValue();
@@ -74,7 +75,15 @@ describe('DeleteInvoiceUseCase', () => {
       });
 
       expect(repository.findById).toHaveBeenCalledWith(invoiceId);
+      // Soft delete: sets deletedAt timestamp instead of physical deletion
       expect(repository.delete).toHaveBeenCalledWith(invoiceId);
+      expect(auditService.log).toHaveBeenCalledWith(
+        expect.objectContaining({
+          entityType: 'Invoice',
+          entityId: invoiceId,
+          action: 'DELETE',
+        }),
+      );
     });
 
     it('should throw NotFoundException if invoice does not exist', async () => {
@@ -85,6 +94,18 @@ describe('DeleteInvoiceUseCase', () => {
       );
       await expect(useCase.execute(invoiceId)).rejects.toThrow(
         `Invoice with id ${invoiceId} not found`,
+      );
+
+      // Should not attempt soft delete if invoice doesn't exist
+      expect(repository.delete).not.toHaveBeenCalled();
+    });
+
+    it('should throw NotFoundException if invoice is already deleted', async () => {
+      // findById returns null for soft-deleted invoices
+      repository.findById.mockResolvedValue(null);
+
+      await expect(useCase.execute(invoiceId)).rejects.toThrow(
+        NotFoundException,
       );
 
       expect(repository.delete).not.toHaveBeenCalled();

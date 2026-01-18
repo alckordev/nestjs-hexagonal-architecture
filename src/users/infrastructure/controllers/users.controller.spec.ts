@@ -27,6 +27,7 @@ describe('UsersController', () => {
     'Test User',
     'hashedPassword',
     true,
+    null, // deletedAt
     mockDate,
     mockUpdatedDate,
   );
@@ -145,6 +146,7 @@ describe('UsersController', () => {
         updateUserDto.name!,
         mockUser.password,
         mockUser.isActive,
+        null, // deletedAt
         mockUser.createdAt,
         new Date(),
       );

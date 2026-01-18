@@ -27,6 +27,7 @@ export class PrismaUserRepositoryAdapter implements IUserRepository {
       name: prismaUser.name,
       password: prismaUser.password,
       isActive: prismaUser.isActive,
+      deletedAt: prismaUser.deletedAt,
       createdAt: prismaUser.createdAt,
       updatedAt: prismaUser.updatedAt,
     });
@@ -37,7 +38,8 @@ export class PrismaUserRepositoryAdapter implements IUserRepository {
       where: { id },
     });
 
-    if (!prismaUser) {
+    // Filter out soft-deleted users (deletedAt is not null)
+    if (!prismaUser || prismaUser.deletedAt !== null) {
       return null;
     }
 
@@ -47,6 +49,7 @@ export class PrismaUserRepositoryAdapter implements IUserRepository {
       name: prismaUser.name,
       password: prismaUser.password,
       isActive: prismaUser.isActive,
+      deletedAt: prismaUser.deletedAt,
       createdAt: prismaUser.createdAt,
       updatedAt: prismaUser.updatedAt,
     });
@@ -57,7 +60,8 @@ export class PrismaUserRepositoryAdapter implements IUserRepository {
       where: { email },
     });
 
-    if (!prismaUser) {
+    // Filter out soft-deleted users (deletedAt is not null)
+    if (!prismaUser || prismaUser.deletedAt !== null) {
       return null;
     }
 
@@ -67,6 +71,7 @@ export class PrismaUserRepositoryAdapter implements IUserRepository {
       name: prismaUser.name,
       password: prismaUser.password,
       isActive: prismaUser.isActive,
+      deletedAt: prismaUser.deletedAt,
       createdAt: prismaUser.createdAt,
       updatedAt: prismaUser.updatedAt,
     });
@@ -74,6 +79,7 @@ export class PrismaUserRepositoryAdapter implements IUserRepository {
 
   async findAll(): Promise<User[]> {
     const prismaUsers = await this.prisma.user.findMany({
+      where: { deletedAt: null }, // Only return non-deleted users
       orderBy: { createdAt: 'desc' },
     });
 
@@ -84,6 +90,7 @@ export class PrismaUserRepositoryAdapter implements IUserRepository {
         name: prismaUser.name,
         password: prismaUser.password,
         isActive: prismaUser.isActive,
+        deletedAt: prismaUser.deletedAt,
         createdAt: prismaUser.createdAt,
         updatedAt: prismaUser.updatedAt,
       });
@@ -117,14 +124,17 @@ export class PrismaUserRepositoryAdapter implements IUserRepository {
       name: prismaUser.name,
       password: prismaUser.password,
       isActive: prismaUser.isActive,
+      deletedAt: prismaUser.deletedAt,
       createdAt: prismaUser.createdAt,
       updatedAt: prismaUser.updatedAt,
     });
   }
 
   async delete(id: string): Promise<void> {
-    await this.prisma.user.delete({
+    // Soft delete: set deletedAt to current timestamp
+    await this.prisma.user.update({
       where: { id },
+      data: { deletedAt: new Date() },
     });
   }
 }

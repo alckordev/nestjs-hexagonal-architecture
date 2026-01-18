@@ -7,6 +7,7 @@ export class Invoice {
     public readonly amount: number,
     public readonly description: string | null,
     public readonly status: InvoiceStatus,
+    public readonly deletedAt: Date | null,
     public readonly createdAt: Date,
     public readonly updatedAt: Date,
   ) {}
@@ -17,6 +18,7 @@ export class Invoice {
     amount: number | string | { toString(): string };
     description: string | null;
     status: InvoiceStatus | string;
+    deletedAt?: Date | null;
     createdAt: Date;
     updatedAt: Date;
   }): Invoice {
@@ -37,6 +39,7 @@ export class Invoice {
       amountValue,
       data.description,
       data.status as InvoiceStatus,
+      data.deletedAt || null,
       data.createdAt,
       data.updatedAt,
     );
@@ -49,6 +52,7 @@ export class Invoice {
       amount: this.amount,
       description: this.description,
       status: this.status,
+      deletedAt: this.deletedAt,
       createdAt: this.createdAt,
       updatedAt: this.updatedAt,
     };

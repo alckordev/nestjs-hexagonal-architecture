@@ -15,6 +15,7 @@ describe('GetUserUseCase', () => {
     'Test User',
     'hashedPassword',
     true,
+    null, // deletedAt
     new Date(),
     new Date(),
   );

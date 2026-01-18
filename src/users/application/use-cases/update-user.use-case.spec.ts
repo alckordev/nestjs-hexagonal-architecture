@@ -16,6 +16,7 @@ describe('UpdateUserUseCase', () => {
     'Test User',
     'hashedPassword',
     true,
+    null, // deletedAt
     new Date(),
     new Date(),
   );
@@ -26,6 +27,7 @@ describe('UpdateUserUseCase', () => {
     'Other User',
     'hashedPassword',
     true,
+    null, // deletedAt
     new Date(),
     new Date(),
   );
@@ -72,6 +74,7 @@ describe('UpdateUserUseCase', () => {
         updateDto.name!,
         mockUser.password,
         mockUser.isActive,
+        null, // deletedAt
         mockUser.createdAt,
         new Date(),
       );
@@ -136,6 +139,7 @@ describe('UpdateUserUseCase', () => {
         updateDto.name!,
         mockUser.password,
         mockUser.isActive,
+        null, // deletedAt
         mockUser.createdAt,
         new Date(),
       );

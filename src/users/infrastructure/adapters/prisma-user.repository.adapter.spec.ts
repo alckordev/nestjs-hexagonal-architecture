@@ -47,6 +47,7 @@ describe('PrismaUserRepositoryAdapter', () => {
     name: 'Test User',
     password: 'hashedPassword',
     isActive: true,
+    deletedAt: null,
     createdAt: mockDate,
     updatedAt: mockUpdatedDate,
   };
@@ -158,17 +159,22 @@ describe('PrismaUserRepositoryAdapter', () => {
       const result = await adapter.findAll();
 
       expect(prismaService.user.findMany).toHaveBeenCalledWith({
+        where: { deletedAt: null },
         orderBy: { createdAt: 'desc' },
       });
       expect(result).toHaveLength(2);
       expect(result[0]).toBeInstanceOf(User);
     });
 
-    it('should return empty array when no users exist', async () => {
+    it('should return empty array when no non-deleted users exist', async () => {
       prismaService.user.findMany.mockResolvedValue([]);
 
       const result = await adapter.findAll();
 
+      expect(prismaService.user.findMany).toHaveBeenCalledWith({
+        where: { deletedAt: null },
+        orderBy: { createdAt: 'desc' },
+      });
       expect(result).toEqual([]);
     });
   });
@@ -216,14 +222,19 @@ describe('PrismaUserRepositoryAdapter', () => {
   });
 
   describe('delete', () => {
-    it('should delete a user', async () => {
-      prismaService.user.delete.mockResolvedValue(mockPrismaUser as any);
+    it('should soft delete a user by setting deletedAt timestamp', async () => {
+      const deletedAt = new Date();
+      const updatedUser = { ...mockPrismaUser, deletedAt };
+      prismaService.user.update.mockResolvedValue(updatedUser as any);
 
       await adapter.delete(mockPrismaUser.id);
 
-      expect(prismaService.user.delete).toHaveBeenCalledWith({
+      // Soft delete: sets deletedAt to current timestamp instead of physical deletion
+      expect(prismaService.user.update).toHaveBeenCalledWith({
         where: { id: mockPrismaUser.id },
+        data: { deletedAt: expect.any(Date) as Date },
       });
+      expect(prismaService.user.delete).not.toHaveBeenCalled();
     });
   });
 });

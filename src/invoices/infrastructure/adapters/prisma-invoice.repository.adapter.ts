@@ -28,6 +28,7 @@ export class PrismaInvoiceRepositoryAdapter implements IInvoiceRepository {
       amount: prismaInvoice.amount,
       description: prismaInvoice.description,
       status: prismaInvoice.status,
+      deletedAt: prismaInvoice.deletedAt,
       createdAt: prismaInvoice.createdAt,
       updatedAt: prismaInvoice.updatedAt,
     });
@@ -38,7 +39,7 @@ export class PrismaInvoiceRepositoryAdapter implements IInvoiceRepository {
       where: { id },
     });
 
-    if (!prismaInvoice) {
+    if (!prismaInvoice || prismaInvoice.deletedAt !== null) {
       return null;
     }
 
@@ -48,6 +49,7 @@ export class PrismaInvoiceRepositoryAdapter implements IInvoiceRepository {
       amount: prismaInvoice.amount,
       description: prismaInvoice.description,
       status: prismaInvoice.status,
+      deletedAt: prismaInvoice.deletedAt,
       createdAt: prismaInvoice.createdAt,
       updatedAt: prismaInvoice.updatedAt,
     });
@@ -55,7 +57,10 @@ export class PrismaInvoiceRepositoryAdapter implements IInvoiceRepository {
 
   async findByUserId(userId: string): Promise<Invoice[]> {
     const prismaInvoices = await this.prisma.invoice.findMany({
-      where: { userId },
+      where: {
+        userId,
+        deletedAt: null,
+      },
       orderBy: { createdAt: 'desc' },
     });
 
@@ -66,6 +71,7 @@ export class PrismaInvoiceRepositoryAdapter implements IInvoiceRepository {
         amount: prismaInvoice.amount,
         description: prismaInvoice.description,
         status: prismaInvoice.status,
+        deletedAt: prismaInvoice.deletedAt,
         createdAt: prismaInvoice.createdAt,
         updatedAt: prismaInvoice.updatedAt,
       });
@@ -74,6 +80,7 @@ export class PrismaInvoiceRepositoryAdapter implements IInvoiceRepository {
 
   async findAll(): Promise<Invoice[]> {
     const prismaInvoices = await this.prisma.invoice.findMany({
+      where: { deletedAt: null },
       orderBy: { createdAt: 'desc' },
     });
 
@@ -84,6 +91,7 @@ export class PrismaInvoiceRepositoryAdapter implements IInvoiceRepository {
         amount: prismaInvoice.amount,
         description: prismaInvoice.description,
         status: prismaInvoice.status,
+        deletedAt: prismaInvoice.deletedAt,
         createdAt: prismaInvoice.createdAt,
         updatedAt: prismaInvoice.updatedAt,
       });
@@ -114,14 +122,17 @@ export class PrismaInvoiceRepositoryAdapter implements IInvoiceRepository {
       amount: prismaInvoice.amount,
       description: prismaInvoice.description,
       status: prismaInvoice.status,
+      deletedAt: prismaInvoice.deletedAt,
       createdAt: prismaInvoice.createdAt,
       updatedAt: prismaInvoice.updatedAt,
     });
   }
 
   async delete(id: string): Promise<void> {
-    await this.prisma.invoice.delete({
+    // Soft delete: set deletedAt to current timestamp
+    await this.prisma.invoice.update({
       where: { id },
+      data: { deletedAt: new Date() },
     });
   }
 }

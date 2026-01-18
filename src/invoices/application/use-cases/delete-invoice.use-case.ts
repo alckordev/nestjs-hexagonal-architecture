@@ -27,13 +27,14 @@ export class DeleteInvoiceUseCase {
       userAgent?: string | null;
     },
   ): Promise<void> {
-    // Check if invoice exists
+    // Check if invoice exists and is not deleted
     const existingInvoice = await this.repository.findById(id);
 
     if (!existingInvoice) {
       throw new NotFoundException(`Invoice with id ${id} not found`);
     }
 
+    // Soft delete: set deletedAt to current timestamp
     await this.repository.delete(id);
 
     // Create audit log (fire and forget - don't block the operation)

@@ -17,6 +17,7 @@ describe('GetInvoiceUseCase', () => {
     100.5,
     'Test invoice',
     InvoiceStatus.PENDING,
+    null, // deletedAt
     new Date(),
     new Date(),
   );

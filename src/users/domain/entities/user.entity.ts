@@ -5,6 +5,7 @@ export class User {
     public readonly name: string,
     public readonly password: string,
     public readonly isActive: boolean,
+    public readonly deletedAt: Date | null,
     public readonly createdAt: Date,
     public readonly updatedAt: Date,
   ) {}
@@ -15,6 +16,7 @@ export class User {
     name: string;
     password: string;
     isActive: boolean;
+    deletedAt?: Date | null;
     createdAt: Date;
     updatedAt: Date;
   }): User {
@@ -24,6 +26,7 @@ export class User {
       data.name,
       data.password,
       data.isActive,
+      data.deletedAt || null,
       data.createdAt,
       data.updatedAt,
     );
@@ -35,6 +38,7 @@ export class User {
       email: this.email,
       name: this.name,
       isActive: this.isActive,
+      deletedAt: this.deletedAt,
       createdAt: this.createdAt,
       updatedAt: this.updatedAt,
     };

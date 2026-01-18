@@ -24,13 +24,14 @@ export class DeleteUserUseCase {
       userAgent?: string | null;
     },
   ): Promise<void> {
-    // Check if user exists
+    // Check if user exists and is not deleted
     const existingUser = await this.repository.findById(id);
 
     if (!existingUser) {
       throw new NotFoundException(`User with id ${id} not found`);
     }
 
+    // Soft delete: set deletedAt to current timestamp
     await this.repository.delete(id);
 
     // Create audit log (fire and forget - don't block the operation)
@@ -47,6 +48,8 @@ export class DeleteUserUseCase {
         })
         .catch((error) => {
           // Log error but don't fail the main operation
+          // Note: Using console.error here as Logger would require dependency injection
+          // and AuditService is optional
           console.error('Failed to create audit log:', error);
         });
     }

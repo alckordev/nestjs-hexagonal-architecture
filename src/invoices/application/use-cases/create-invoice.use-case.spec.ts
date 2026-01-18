@@ -26,6 +26,7 @@ describe('CreateInvoiceUseCase', () => {
     createInvoiceDto.amount,
     createInvoiceDto.description || null,
     createInvoiceDto.status || InvoiceStatus.PENDING,
+    null, // deletedAt
     new Date(),
     new Date(),
   );
@@ -100,6 +101,7 @@ describe('CreateInvoiceUseCase', () => {
         mockInvoice.amount,
         mockInvoice.description,
         InvoiceStatus.PENDING,
+        null, // deletedAt
         mockInvoice.createdAt,
         mockInvoice.updatedAt,
       );

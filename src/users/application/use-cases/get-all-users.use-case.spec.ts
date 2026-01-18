@@ -15,6 +15,7 @@ describe('GetAllUsersUseCase', () => {
       'Test User 1',
       'hashedPassword1',
       true,
+      null, // deletedAt
       new Date(),
       new Date(),
     ),
@@ -24,6 +25,7 @@ describe('GetAllUsersUseCase', () => {
       'Test User 2',
       'hashedPassword2',
       true,
+      null, // deletedAt
       new Date(),
       new Date(),
     ),

@@ -12,6 +12,7 @@ describe('User Entity', () => {
         name: 'Test User',
         password: 'hashedPassword',
         isActive: true,
+        deletedAt: null,
         createdAt: mockDate,
         updatedAt: mockUpdatedDate,
       };
@@ -24,6 +25,7 @@ describe('User Entity', () => {
       expect(user.name).toBe(prismaData.name);
       expect(user.password).toBe(prismaData.password);
       expect(user.isActive).toBe(prismaData.isActive);
+      expect(user.deletedAt).toBeNull();
       expect(user.createdAt).toBe(prismaData.createdAt);
       expect(user.updatedAt).toBe(prismaData.updatedAt);
     });
@@ -35,6 +37,7 @@ describe('User Entity', () => {
         name: 'Test User',
         password: 'hashedPassword',
         isActive: false,
+        deletedAt: null,
         createdAt: mockDate,
         updatedAt: mockUpdatedDate,
       };
@@ -42,6 +45,7 @@ describe('User Entity', () => {
       const user = User.fromPrisma(prismaData);
 
       expect(user.isActive).toBe(false);
+      expect(user.deletedAt).toBeNull();
     });
   });
 
@@ -53,6 +57,7 @@ describe('User Entity', () => {
         'Test User',
         'hashedPassword',
         true,
+        null, // deletedAt
         mockDate,
         mockUpdatedDate,
       );
@@ -64,6 +69,7 @@ describe('User Entity', () => {
         email: 'test@example.com',
         name: 'Test User',
         isActive: true,
+        deletedAt: null,
         createdAt: mockDate,
         updatedAt: mockUpdatedDate,
       });

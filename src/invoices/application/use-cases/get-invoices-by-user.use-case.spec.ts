@@ -18,6 +18,7 @@ describe('GetInvoicesByUserUseCase', () => {
       100.5,
       'Invoice 1',
       InvoiceStatus.PENDING,
+      null, // deletedAt
       new Date(),
       new Date(),
     ),
@@ -27,6 +28,7 @@ describe('GetInvoicesByUserUseCase', () => {
       200.75,
       'Invoice 2',
       InvoiceStatus.PAID,
+      null, // deletedAt
       new Date(),
       new Date(),
     ),
