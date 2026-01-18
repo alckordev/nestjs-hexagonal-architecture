@@ -4,6 +4,7 @@ import { ConflictException } from '@nestjs/common';
 import { CreateUserUseCase } from './create-user.use-case';
 import { IUserRepository } from '../../domain/ports/user.repository.port';
 import { User } from '../../domain/entities/user.entity';
+import { AuditService } from '@audit/application/services/audit.service';
 import { CreateUserDto } from '../dto/create-user.dto';
 
 describe('CreateUserUseCase', () => {
@@ -79,6 +80,57 @@ describe('CreateUserUseCase', () => {
 
       expect(repository.findByEmail).toHaveBeenCalledWith(createUserDto.email);
       expect(repository.create).not.toHaveBeenCalled();
+    });
+
+    it('should create audit log when audit service is available', async () => {
+      const mockAuditService: jest.Mocked<AuditService> = {
+        log: jest.fn(),
+      } as unknown as jest.Mocked<AuditService>;
+
+      const moduleWithAudit: TestingModule = await Test.createTestingModule({
+        providers: [
+          CreateUserUseCase,
+          {
+            provide: 'IUserRepository',
+            useValue: repository,
+          },
+          {
+            provide: AuditService,
+            useValue: mockAuditService,
+          },
+        ],
+      }).compile();
+
+      const useCaseWithAudit =
+        moduleWithAudit.get<CreateUserUseCase>(CreateUserUseCase);
+
+      repository.findByEmail.mockResolvedValue(null);
+      repository.create.mockResolvedValue(mockUser);
+      mockAuditService.log.mockResolvedValue();
+
+      const result = await useCaseWithAudit.execute(createUserDto, {
+        userId: 'audit-user-id',
+        ipAddress: '192.168.1.1',
+        userAgent: 'Mozilla/5.0',
+      });
+
+      expect(result).toEqual(mockUser);
+      expect(mockAuditService.log).toHaveBeenCalledWith(
+        expect.objectContaining({
+          entityType: 'User',
+          entityId: mockUser.id,
+          action: 'CREATE',
+        }),
+      );
+    });
+
+    it('should work without audit service', async () => {
+      repository.findByEmail.mockResolvedValue(null);
+      repository.create.mockResolvedValue(mockUser);
+
+      const result = await useCase.execute(createUserDto);
+
+      expect(result).toEqual(mockUser);
     });
   });
 });
