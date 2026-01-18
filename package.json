@@ -19,7 +19,15 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "cross-env NODE_OPTIONS=--experimental-vm-modules NODE_ENV=test jest --config ./test/jest-e2e.json",
     "prisma:generate": "npx prisma generate",
-    "prisma:migrate": "dotenv -e .env.development -- npx prisma migrate dev"
+    "prisma:migrate": "dotenv -e .env.development -- npx prisma migrate dev",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "docker:logs": "docker-compose logs -f",
+    "docker:ps": "docker-compose ps",
+    "dynamodb:up": "docker-compose up -d dynamodb-local",
+    "dynamodb:down": "docker-compose down dynamodb-local",
+    "dynamodb:logs": "docker-compose logs -f dynamodb-local",
+    "docker:restart": "docker-compose restart"
   },
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.968.0",
@@ -30,6 +38,7 @@
     "@nestjs/jwt": "^11.0.2",
     "@nestjs/passport": "^11.0.5",
     "@nestjs/platform-express": "^11.0.1",
+    "@nestjs/swagger": "^11.2.5",
     "@prisma/adapter-pg": "^7.2.0",
     "@prisma/client": "^7.2.0",
     "bcrypt": "^6.0.0",
