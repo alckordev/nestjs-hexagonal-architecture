@@ -2,6 +2,7 @@ import { NestFactory, Reflector } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
 import { JwtAuthGuard } from '@auth/infrastructure/guards/jwt-auth.guard';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -22,9 +23,43 @@ async function bootstrap() {
   const reflector = app.get(Reflector);
   app.useGlobalGuards(new JwtAuthGuard(reflector));
 
+  // Configure Swagger
+  const config = new DocumentBuilder()
+    .setTitle('NestJS Hexagonal Architecture API')
+    .setDescription(
+      'API documentation for NestJS Hexagonal Architecture application',
+    )
+    .setVersion('1.0')
+    .addBearerAuth(
+      {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+        name: 'JWT',
+        description: 'Enter JWT token',
+        in: 'header',
+      },
+      'JWT-auth', // This name here is important for matching up with @ApiBearerAuth() in your controller!
+    )
+    .addTag('auth', 'Authentication endpoints')
+    .addTag('users', 'User management endpoints')
+    .addTag('invoices', 'Invoice management endpoints')
+    .addTag('audit', 'Audit log endpoints')
+    .build();
+
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api', app, document, {
+    swaggerOptions: {
+      persistAuthorization: true, // Keep auth token after page refresh
+    },
+  });
+
   await app.listen(process.env.PORT ?? 3000);
 
   console.log(`Server is running on port ${process.env.PORT ?? 3000}`);
   console.log(`Environment: ${process.env.NODE_ENV}`);
+  console.log(
+    `Swagger is available at http://localhost:${process.env.PORT ?? 3000}/api`,
+  );
 }
 void bootstrap();

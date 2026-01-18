@@ -33,7 +33,8 @@ export class PrismaTokenBlacklistRepositoryAdapter implements ITokenBlacklistRep
 
     // Check if expired and delete if so
     if (blacklisted.expiresAt < new Date()) {
-      await this.prisma.tokenBlacklist.delete({
+      // Use deleteMany to avoid error if already deleted
+      await this.prisma.tokenBlacklist.deleteMany({
         where: { token },
       });
       return false;

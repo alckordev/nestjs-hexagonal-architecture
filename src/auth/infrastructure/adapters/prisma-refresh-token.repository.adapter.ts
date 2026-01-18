@@ -63,13 +63,10 @@ export class PrismaRefreshTokenRepositoryAdapter implements IRefreshTokenReposit
   }
 
   async delete(token: string): Promise<void> {
-    await this.prisma.refreshToken
-      .delete({
-        where: { token },
-      })
-      .catch(() => {
-        // Ignore if token doesn't exist
-      });
+    // Use deleteMany instead of delete to avoid error if token doesn't exist
+    await this.prisma.refreshToken.deleteMany({
+      where: { token },
+    });
   }
 
   async deleteByUserId(userId: string): Promise<void> {

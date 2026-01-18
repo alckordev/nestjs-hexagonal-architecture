@@ -7,6 +7,13 @@ import {
   UseGuards,
   Request as Req,
 } from '@nestjs/common';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiBearerAuth,
+  ApiBody,
+} from '@nestjs/swagger';
 import { LoginUseCase } from '@auth/application/use-cases/login.use-case';
 import { RegisterUseCase } from '@auth/application/use-cases/register.use-case';
 import { RefreshTokenUseCase } from '@auth/application/use-cases/refresh-token.use-case';
@@ -28,6 +35,7 @@ import type { Request } from 'express';
 //   };
 // }
 
+@ApiTags('auth')
 @Controller('auth')
 export class AuthController {
   constructor(
@@ -54,6 +62,20 @@ export class AuthController {
   @Public()
   @Post('register')
   @HttpCode(HttpStatus.CREATED)
+  @ApiOperation({ summary: 'Register a new user', security: [] })
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description: 'User successfully registered',
+    type: AuthResponseDto,
+  })
+  @ApiResponse({
+    status: HttpStatus.CONFLICT,
+    description: 'User with this email already exists',
+  })
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: 'Validation error',
+  })
   async register(
     @Body() registerDto: RegisterDto,
     @Req() req: Request,
@@ -64,6 +86,20 @@ export class AuthController {
   @Public()
   @Post('login')
   @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Login with email and password', security: [] })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'User successfully authenticated',
+    type: AuthResponseDto,
+  })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'Invalid credentials or inactive account',
+  })
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: 'Validation error',
+  })
   async login(
     @Body() loginDto: LoginDto,
     @Req() req: Request,
@@ -74,6 +110,23 @@ export class AuthController {
   @Public()
   @Post('refresh')
   @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    summary: 'Refresh access token using refresh token',
+    security: [],
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Token successfully refreshed',
+    type: AuthResponseDto,
+  })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'Invalid or expired refresh token',
+  })
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: 'Validation error',
+  })
   async refresh(
     @Body() refreshTokenDto: RefreshTokenDto,
   ): Promise<AuthResponseDto> {
@@ -83,6 +136,28 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   @Post('logout')
   @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({ summary: 'Logout and revoke tokens' })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        refreshToken: {
+          type: 'string',
+          description: 'Refresh token to revoke',
+          example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
+        },
+      },
+    },
+  })
+  @ApiResponse({
+    status: HttpStatus.NO_CONTENT,
+    description: 'Successfully logged out',
+  })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'Unauthorized',
+  })
   async logout(@Req() req: Request): Promise<void> {
     const authHeader = req.headers.authorization;
     const accessToken = authHeader?.replace('Bearer ', '') || '';
